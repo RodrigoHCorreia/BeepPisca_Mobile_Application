@@ -34,5 +34,10 @@
     <string name="no_tickets_available">Sem bilhetes disponíveis</string>
     <string name="hello_user">Olá, %1$s</string>
     <string name="destino">Destino</string>
+    <string name="validation_successful">Bilhete validado com sucesso</string>
+    <string name="validation_failed">Falha na validação do bilhete. Tente novamente.</string>
+    <string name="ok">OK</string>
+    <string name="try_again">Tentar novamente</string>
+
 
 </resources>

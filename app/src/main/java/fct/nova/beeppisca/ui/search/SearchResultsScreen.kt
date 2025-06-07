@@ -1,4 +1,4 @@
-package fct.nova.beeppisca.ui.home
+package fct.nova.beeppisca.ui.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import fct.nova.beeppisca.R
 import fct.nova.beeppisca.domain.SearchResult
 import fct.nova.beeppisca.domain.MomentLocation
 import fct.nova.beeppisca.ui.theme.CarrisBlack
@@ -79,7 +80,7 @@ private fun SearchResultCard(item: SearchResult, onClick: () -> Unit) {
             // Stop name + walk distance
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    painter = painterResource(id = fct.nova.beeppisca.R.drawable.stickman),
+                    painter = painterResource(id = R.drawable.stickman),
                     contentDescription = null,
                     tint = CarrisBlack
                 )
@@ -91,7 +92,7 @@ private fun SearchResultCard(item: SearchResult, onClick: () -> Unit) {
             // Bus distance
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    painter = painterResource(id = fct.nova.beeppisca.R.drawable.bus),
+                    painter = painterResource(id = R.drawable.bus),
                     contentDescription = null,
                     tint = CarrisBlack
                 )

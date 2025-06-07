@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    // <-- add this line:
+    id("kotlin-parcelize")
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -10,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "fct.nova.beeppisca"
-        minSdk = 30
+        minSdk = 33
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -49,6 +51,13 @@ dependencies {
     implementation (libs.gson)
 
 
+    implementation("com.google.mlkit:barcode-scanning:17.0.2")
+    implementation("androidx.camera:camera-camera2:1.1.0")
+    // CameraX lifecycle
+    implementation("androidx.camera:camera-lifecycle:1.1.0")
+    // CameraX view (PreviewView)
+    implementation("androidx.camera:camera-view:1.1.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("androidx.core:core-ktx:1.9.0")

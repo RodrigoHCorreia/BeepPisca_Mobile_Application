@@ -17,15 +17,15 @@ class BusRepository {
      */
     suspend fun getBusStopForLocation(lat: Double, lon: Double): BusStop? {
         delay(300) // simulate network
-        return if (Random.nextBoolean()) {
-            BusStop(
+        //return if (Random.nextBoolean()) {
+            return BusStop(
                 id       = "bs123",
                 name     = "Central",
                 location = Location(lat, lon),
                 radius   = 100.0,
                 imageUrl = "" // future: real URL
             )
-        } else null
+        //} else null
     }
 
     /**
@@ -33,7 +33,8 @@ class BusRepository {
      */
     suspend fun hasMonthlyTicket(userId: String): Boolean {
         delay(100)
-        return Random.nextBoolean()
+        return true
+        //return Random.nextBoolean()
     }
 
     /**
@@ -51,13 +52,13 @@ class BusRepository {
     suspend fun getUserTickets(userId: String): List<Ticket> {
         delay(200)
         val list = mutableListOf<Ticket>()
-        if (Random.nextBoolean()) {
+        //if (Random.nextBoolean()) {
             list += MonthlyTicket(
                 id                = "monthly123",
                 dateOfPurchase   = "01/06",
                 expirationDate   = "30/06",
             )
-        }
+        //}
         list += StandaloneTicket(
             id                = "ticket123",
             dateOfPurchase   = "01/06",

@@ -1,4 +1,4 @@
-package fct.nova.beeppisca.ui.theme
+package fct.nova.beeppisca.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

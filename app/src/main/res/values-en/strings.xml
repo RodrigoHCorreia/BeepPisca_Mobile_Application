@@ -35,4 +35,8 @@
     <string name="no_tickets_available">No tickets available</string>
     <string name="hello_user">Hello, %1$s</string>
     <string name="destino">Destination</string>
+    <string name="validation_successful">Ticket validated successfully</string>
+    <string name="validation_failed">Ticket validation failed. Please try again.</string>
+    <string name="ok">OK</string>
+    <string name="try_again">Try Again</string>
 </resources>

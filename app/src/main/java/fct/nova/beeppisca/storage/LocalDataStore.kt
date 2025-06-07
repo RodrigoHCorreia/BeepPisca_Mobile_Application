@@ -6,67 +6,88 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
 import fct.nova.beeppisca.domain.SimpleUser
-import fct.nova.beeppisca.domain.Ticket
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
 class LocalDataStore(private val dataStore: DataStore<Preferences>) {
     private val gson = Gson()
-    private val SIMPLE_USER_KEY = stringPreferencesKey("simple_user_json")
+
+    // Key under which we store the current user JSON
+    private val SIMPLE_USER_KEY    = stringPreferencesKey("simple_user_json")
+    // Key under which we store the session cookie
     private val SESSION_COOKIE_KEY = stringPreferencesKey("session_cookie")
 
-    /**
-     * Save the whole SimpleUser object as JSON.
-     */
+    companion object {
+        /** Two predefined users */
+        val ADMIN_USER = SimpleUser(
+            id       = "admin01",
+            name     = "Admin",
+            email    = "admin@example.com",
+            password = null,
+            token    = null,
+            isAdmin  = true
+        )
+
+        val BASIC_USER = SimpleUser(
+            id       = "user01",
+            name     = "Regular User",
+            email    = "user@example.com",
+            password = null,
+            token    = null,
+            isAdmin  = false
+        )
+    }
+
+    /** Persist a SimpleUser to DataStore (i.e. “log in”). */
     suspend fun saveSimpleUser(user: SimpleUser) {
         val json = gson.toJson(user)
-        dataStore.edit { it[SIMPLE_USER_KEY] = json }
+        dataStore.edit { prefs ->
+            prefs[SIMPLE_USER_KEY] = json
+        }
     }
 
-    /**
-     * Get the cached SimpleUser as a Flow (null if not cached)
-     */
-    val cachedSimpleUser: Flow<SimpleUser?> = dataStore.data
+    /** Save session cookie */
+    suspend fun saveSessionCookie(cookie: String) {
+        dataStore.edit { prefs ->
+            prefs[SESSION_COOKIE_KEY] = cookie
+        }
+    }
+
+    /** Clear session cookie */
+    suspend fun clearSessionCookie() {
+        dataStore.edit { prefs ->
+            prefs.remove(SESSION_COOKIE_KEY)
+        }
+    }
+
+    /** Flow of the stored session cookie (or null) */
+    val sessionCookieFlow: Flow<String?> = dataStore.data
+        .map { prefs -> prefs[SESSION_COOKIE_KEY] }
+
+    /** Convenience: log in as the built-in admin user */
+    suspend fun loginAsAdmin() = saveSimpleUser(ADMIN_USER)
+
+    /** Convenience: log in as the built-in basic user */
+    suspend fun loginAsBasic() = saveSimpleUser(BASIC_USER)
+
+    /** “Log out” by clearing the saved user */
+    suspend fun clearSimpleUser() {
+        dataStore.edit { prefs ->
+            prefs.remove(SIMPLE_USER_KEY)
+        }
+    }
+
+    /** Flow of the current cached user (or null if none) */
+    val currentUser: Flow<SimpleUser?> = dataStore.data
         .map { prefs ->
-            prefs[SIMPLE_USER_KEY]?.let { gson.fromJson(it, SimpleUser::class.java) }
+            prefs[SIMPLE_USER_KEY]?.let {
+                gson.fromJson(it, SimpleUser::class.java)
+            }
         }
 
-    /** Save/load/clear session cookie **/
-    suspend fun saveSessionCookie(cookie: String) {
-        dataStore.edit { it[SESSION_COOKIE_KEY] = cookie }
-    }
+    /** Flow of just the userId (or null) */
+    val userIdFlow: Flow<String?> = currentUser.map { it?.id }
 
-    val sessionCookieFlow: Flow<String?> = dataStore.data.map { it[SESSION_COOKIE_KEY] }
-
-    suspend fun clearSessionCookie() {
-        dataStore.edit { it.remove(SESSION_COOKIE_KEY) }
-    }
-
-    /**
-     * Clear the cached user (e.g., on logout)
-     */
-    suspend fun clearSimpleUser() {
-        dataStore.edit { it.remove(SIMPLE_USER_KEY) }
-    }
-
-    // ---------- Your existing mock logic for preferences and tickets (optional) ----------
-    private val _userData = MutableStateFlow<Map<String, String>>(emptyMap())
-    val userData: Flow<Map<String, String>> get() = _userData
-
-    fun saveUserPreference(key: String, value: String) {
-        _userData.value = _userData.value + (key to value)
-    }
-
-    fun getUserPreference(key: String): String? {
-        return _userData.value[key]
-    }
-
-    fun getUserTickets(): Flow<List<Ticket>> {
-        return MutableStateFlow(emptyList())
-    }
-
-    fun saveUserTicket(ticket: Ticket) {
-        // No-op or implement as needed
-    }
+    /** Flow of just the admin-flag (false if no user or non-admin) */
+    val isAdminFlow: Flow<Boolean> = currentUser.map { it?.isAdmin == true }
 }

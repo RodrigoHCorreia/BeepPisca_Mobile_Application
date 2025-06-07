@@ -27,7 +27,7 @@ class AuthViewModel(
     init {
         // Listen to cached user info and always reflect latest value
         viewModelScope.launch {
-            localDataStore.cachedSimpleUser.collect { user ->
+            localDataStore.currentUser.collect { user ->
                 _userInfo.value = user
             }
         }

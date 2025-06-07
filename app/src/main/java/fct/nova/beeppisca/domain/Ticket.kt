@@ -1,7 +1,7 @@
 package fct.nova.beeppisca.domain
 
 import fct.nova.beeppisca.R
-import fct.nova.beeppisca.ui.home.LandingViewModel.TicketType
+import fct.nova.beeppisca.ui.home.AtStopViewModel.TicketType
 
 sealed class Ticket {
     abstract val id: String

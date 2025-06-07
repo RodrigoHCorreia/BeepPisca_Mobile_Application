@@ -43,7 +43,8 @@ fun PreviewLoggedInScreen_User() {
             email = "carlos@example.com",
             password = null,
             token = null,
-            isAdmin = false
+            isAdmin = false,
+            id = "12345"
         ),
         onLogout = {}
     )
@@ -58,7 +59,8 @@ fun PreviewLoggedInScreen_Admin() {
             email = "admin@company.com",
             password = null,
             token = null,
-            isAdmin = true
+            isAdmin = true,
+            id = "admin12345"
         ),
         onLogout = {}
     )

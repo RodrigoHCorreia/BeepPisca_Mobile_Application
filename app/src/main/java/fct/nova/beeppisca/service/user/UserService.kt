@@ -1,3 +1,4 @@
+// app/src/main/java/fct/nova/beeppisca/service/user/UserService.kt
 package fct.nova.beeppisca.service.user
 
 import fct.nova.beeppisca.domain.SimpleUser
@@ -15,100 +16,112 @@ class UserService(
     private val localDataStore: LocalDataStore
 ) {
     private val client = OkHttpClient()
-    // Backing field for in-memory session cookie
     private var sessionCookie: String? = null
 
-    // Load session cookie from storage on demand or app launch
+    /** Load the cookie we last saved (if any) */
     suspend fun loadSessionCookie() {
         sessionCookie = localDataStore.sessionCookieFlow.first()
     }
 
-    // Register (JSON body)
-    suspend fun register(username: String, password: String, email: String, type: String): Boolean = withContext(Dispatchers.IO) {
+    /** Register a new user */
+    suspend fun register(
+        username: String,
+        password: String,
+        email: String,
+        type: String
+    ): Boolean = withContext(Dispatchers.IO) {
         val json = JSONObject()
             .put("username", username)
             .put("password", password)
             .put("email", email)
             .put("type", type)
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
+        val body = json
+            .toString()
+            .toRequestBody("application/json".toMediaTypeOrNull())
+
         val request = Request.Builder()
             .url(URIS.User.CREATE)
             .post(body)
             .build()
+
         client.newCall(request).execute().use { response ->
-            response.isSuccessful
+            return@use response.isSuccessful
         }
     }
 
-    // Login (form fields)
+    /** Login and capture JSESSIONID */
     suspend fun login(username: String, password: String): Boolean = withContext(Dispatchers.IO) {
-        val formBody = FormBody.Builder()
+        val form = FormBody.Builder()
             .add("username", username)
             .add("password", password)
             .build()
+
         val request = Request.Builder()
             .url(URIS.User.LOGIN)
-            .post(formBody)
+            .post(form)
             .build()
+
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) return@use false
-            // Extract JSESSIONID cookie
-            val cookieHeader = response.headers("Set-Cookie")
-            val jSession = cookieHeader.find { it.startsWith("JSESSIONID") }
-            jSession?.let {
-                sessionCookie = it.substringBefore(";")
-                // Save to local storage as well
-                localDataStore.saveSessionCookie(sessionCookie!!)
+
+            // find the JSESSIONID in Set-Cookie header
+            val rawCookies = response.headers("Set-Cookie")
+            val jsess = rawCookies
+                .firstOrNull { it.startsWith("JSESSIONID") }
+                ?.substringBefore(";")
+
+            jsess?.let {
+                sessionCookie = it
+                localDataStore.saveSessionCookie(it)
             }
-            sessionCookie != null
+
+            return@use sessionCookie != null
         }
     }
 
-    // Logout
+    /** Logout (POST empty body) */
     suspend fun logout(): Boolean = withContext(Dispatchers.IO) {
+        val body = ByteArray(0).toRequestBody(null)
         val builder = Request.Builder()
             .url(URIS.User.LOGOUT)
-            .post(RequestBody.create(null, ByteArray(0)))
-        sessionCookie?.let {
-            builder.addHeader("Cookie", it)
-        }
-        val request = builder.build()
-        client.newCall(request).execute().use { response ->
+            .post(body)
+
+        sessionCookie?.let { builder.addHeader("Cookie", it) }
+
+        client.newCall(builder.build()).execute().use { response ->
             if (response.isSuccessful) {
                 sessionCookie = null
                 localDataStore.clearSessionCookie()
             }
-            response.isSuccessful
+            return@use response.isSuccessful
         }
     }
 
-    // Get "me"
+    /** Get the “current user” from /me */
     suspend fun getMe(): SimpleUser? = withContext(Dispatchers.IO) {
-        // Always make sure we have the session cookie (from memory or storage)
-        if (sessionCookie == null) {
-            loadSessionCookie()
-        }
+        if (sessionCookie == null) loadSessionCookie()
 
         val builder = Request.Builder().url(URIS.User.ME)
         sessionCookie?.let { builder.addHeader("Cookie", it) }
-        val request = builder.build()
-        client.newCall(request).execute().use { response ->
+
+        client.newCall(builder.build()).execute().use { response ->
             if (!response.isSuccessful) return@use null
-            response.body?.string()?.let { body ->
-                parseSimpleUserFromJson(body)
-            }
+            val body = response.body?.string() ?: return@use null
+            return@use parseSimpleUserFromJson(body)
         }
     }
 
     private fun parseSimpleUserFromJson(json: String): SimpleUser? {
         return try {
-            val obj = JSONObject(json)
+            val o = JSONObject(json)
             SimpleUser(
-                name = obj.optString("name"),
-                email = obj.optString("email"),
-                password = obj.optString("password", null),
-                token = obj.optString("token", null),
-                isAdmin = obj.optBoolean("isAdmin", false)
+                id       = o.optString("id"),
+                name     = o.optString("name"),
+                email    = o.optString("email"),
+                password = o.optString("password", null),
+                token    = o.optString("token",    null),
+                isAdmin  = o.optBoolean("isAdmin",  false)
             )
         } catch (e: Exception) {
             null

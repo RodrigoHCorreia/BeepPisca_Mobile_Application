@@ -1,4 +1,4 @@
-package fct.nova.beeppisca.ui.home
+package fct.nova.beeppisca.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
