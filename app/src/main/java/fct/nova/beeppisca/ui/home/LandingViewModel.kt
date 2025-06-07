@@ -18,7 +18,7 @@ class LandingViewModel : ViewModel() {
     }
     enum class TicketType { MONTHLY, REGULAR, NONE }
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    internal val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
     /**

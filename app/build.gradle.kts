@@ -46,6 +46,9 @@ dependencies {
     // org.json for JSON parsing
     implementation(libs.json)
 
+    implementation("androidx.compose.material3:material3:1.1.0")
+    implementation("androidx.activity:activity-ktx:1.7.2")
+    implementation("androidx.core:core-ktx:1.9.0")
     implementation("com.google.android.material:material:1.9.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0")
     implementation ("androidx.appcompat:appcompat:1.7.1")

@@ -3,107 +3,165 @@ package fct.nova.beeppisca.ui.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
+import androidx.compose.material3.CardDefaults.cardElevation
+import androidx.compose.material3.CardDefaults.cardColors
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import fct.nova.beeppisca.R
 import fct.nova.beeppisca.domain.BusStop
 import fct.nova.beeppisca.domain.Location
-import fct.nova.beeppisca.ui.theme.BeepPiscaTheme
-import fct.nova.beeppisca.ui.theme.DefaultButton
+import fct.nova.beeppisca.ui.theme.*
 
-/**
- * Extracted content composable so we can preview all states.
- */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LandingContent(
-    uiState: LandingViewModel.UiState,
+fun LandingScreen(
+    viewModel: LandingViewModel,
     onValidate: () -> Unit,
-    onBuy: () -> Unit
+    onBuy: () -> Unit,
+    onBack: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        when (uiState) {
-            LandingViewModel.UiState.Loading -> {
-                CircularProgressIndicator()
-            }
-            LandingViewModel.UiState.NoStop -> {
-                Text(stringResource(R.string.no_stop_found))
-            }
-            is LandingViewModel.UiState.AtStop -> {
-                val stop = uiState.stop
-                val type = uiState.ticketType
+    val uiState = viewModel.uiState.collectAsState().value
 
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.app_name), color = CarrisBlack) },
+                navigationIcon = {
+                    if (uiState is LandingViewModel.UiState.AtStop &&
+                        uiState.ticketType != LandingViewModel.TicketType.NONE
+                    ) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = stringResource(R.string.back),
+                                tint = CarrisBlue
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    Image(
+                        painter = painterResource(R.drawable.carris_logo),
+                        contentDescription = stringResource(R.string.carris_logo_desc),
+                        modifier = Modifier
+                            .width(130.dp)
+                            .aspectRatio(1029f / 933f)
+                    )
+                },
+                colors = TopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    navigationIconContentColor = CarrisBlue,
+                    titleContentColor = CarrisBlack,
+                    actionIconContentColor = CarrisBlue,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                )
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // BUS-STOP CARD
+            if (uiState is LandingViewModel.UiState.AtStop) {
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    elevation = cardElevation(defaultElevation = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Column {
+                        Text(
+                            text = stringResource(R.string.paragem_title, uiState.stop.name),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = CarrisBlue,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.busstop_placeholder),
+                            contentDescription = stringResource(R.string.content_desc_busstop),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(701f / 326f)
+                                .clip(
+                                    RoundedCornerShape(
+                                        bottomStart = 16.dp,
+                                        bottomEnd = 16.dp
+                                    )
+                                )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // TICKET / ACTION CARD
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = cardElevation(defaultElevation = 4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.padding(24.dp)
                 ) {
-                    Text(
-                        text = stringResource(R.string.paragem_title, stop.name),
-                        style = MaterialTheme.typography.displayLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Image(
-                        painter = painterResource(R.drawable.busstop_placeholder),
-                        contentDescription = stringResource(R.string.content_desc_busstop),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(701f/326f) // aspect ratio of the placeholder image
-                            .padding(horizontal = 16.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(Modifier.height(40.dp))
-                    when (type) {
-                        LandingViewModel.TicketType.MONTHLY -> {
-                            Image(
-                                painter = painterResource(R.drawable.monthly_ticket),
-                                contentDescription = stringResource(R.string.content_desc_ticket),
-                                modifier = Modifier.size(250.dp)
+                    when (uiState) {
+                        LandingViewModel.UiState.Loading ->
+                            CircularProgressIndicator(color = CarrisBlue)
+
+                        LandingViewModel.UiState.NoStop ->
+                            Text(
+                                text = stringResource(R.string.no_stop_found),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = CarrisBlack
                             )
-                            Spacer(Modifier.height(30.dp))
-                            DefaultButton(
-                                text = stringResource(R.string.button_validate_ticket),
-                                onClick = onValidate,
-                                modifier = Modifier.fillMaxWidth(0.8f),
-                            )
-                        }
-                        LandingViewModel.TicketType.REGULAR -> {
-                            Image(
-                                painter = painterResource(R.drawable.regular_ticket),
-                                contentDescription = stringResource(R.string.content_desc_ticket),
-                                modifier = Modifier.size(250.dp)
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            DefaultButton(
-                                text = stringResource(R.string.button_validate_ticket),
-                                onClick = onValidate,
-                                modifier = Modifier.fillMaxWidth(0.8f),
-                            )
-                        }
-                        LandingViewModel.TicketType.NONE -> {
-                            DefaultButton(
-                                text = stringResource(R.string.button_buy_ticket),
-                                onClick = onBuy,
-                            )
+
+                        is LandingViewModel.UiState.AtStop -> {
+                            when (uiState.ticketType) {
+                                LandingViewModel.TicketType.MONTHLY ->
+                                    TicketSection(
+                                        imageRes = R.drawable.monthly_ticket,
+                                        infoText = stringResource(R.string.monthly_ticket_info),
+                                        buttonText = stringResource(R.string.button_validate_ticket),
+                                        onButton = onValidate
+                                    )
+                                LandingViewModel.TicketType.REGULAR ->
+                                    TicketSection(
+                                        imageRes = R.drawable.regular_ticket,
+                                        infoText = stringResource(R.string.regular_ticket_info),
+                                        buttonText = stringResource(R.string.button_validate_ticket),
+                                        onButton = onValidate
+                                    )
+                                LandingViewModel.TicketType.NONE ->
+                                    DefaultButton(
+                                        text = stringResource(R.string.button_buy_ticket),
+                                        onClick = onBuy
+                                    )
+                            }
                         }
                     }
                 }
@@ -112,18 +170,34 @@ fun LandingContent(
     }
 }
 
-/**
- * The runtime composable that hooks into the ViewModel.
- */
 @Composable
-fun LandingScreen(
-    viewModel: LandingViewModel,
-    onValidate: () -> Unit,
-    onBuy: () -> Unit
+private fun TicketSection(
+    imageRes: Int,
+    infoText: String,
+    buttonText: String,
+    onButton: () -> Unit
 ) {
-    val uiState = viewModel.uiState.collectAsState().value
-    LandingContent(uiState, onValidate, onBuy)
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Image(
+            painter = painterResource(imageRes),
+            contentDescription = stringResource(R.string.content_desc_ticket),
+            modifier = Modifier
+                .size(200.dp)
+                .clip(RoundedCornerShape(12.dp))
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = infoText,
+            style = MaterialTheme.typography.bodyMedium,
+            color = CarrisBlack,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        DefaultButton(text = buttonText, onClick = onButton)
+    }
 }
+
 
 /** Previews for each scenario **/
 
@@ -131,10 +205,12 @@ fun LandingScreen(
 @Composable
 fun LandingPreviewLoading() {
     BeepPiscaTheme {
-        LandingContent(
-            uiState = LandingViewModel.UiState.Loading,
+        LandingScreen(
+            viewModel = LandingViewModel().apply {
+            },
             onValidate = {},
-            onBuy = {}
+            onBuy = {},
+            onBack = {}
         )
     }
 }
@@ -143,10 +219,14 @@ fun LandingPreviewLoading() {
 @Composable
 fun LandingPreviewNoStop() {
     BeepPiscaTheme {
-        LandingContent(
-            uiState = LandingViewModel.UiState.NoStop,
+        LandingScreen(
+            viewModel = LandingViewModel().apply {
+                // Simulate no stop found
+                _uiState.value = LandingViewModel.UiState.NoStop
+            },
             onValidate = {},
-            onBuy = {}
+            onBuy = {},
+            onBack = {}
         )
     }
 }
@@ -163,10 +243,13 @@ private val sampleStop = BusStop(
 @Composable
 fun LandingPreviewMonthly() {
     BeepPiscaTheme {
-        LandingContent(
-            uiState = LandingViewModel.UiState.AtStop(sampleStop, LandingViewModel.TicketType.MONTHLY),
+        LandingScreen(
+            viewModel = LandingViewModel().apply {
+                _uiState.value = LandingViewModel.UiState.AtStop(sampleStop, LandingViewModel.TicketType.MONTHLY)
+            },
             onValidate = {},
-            onBuy = {}
+            onBuy = {},
+            onBack = {}
         )
     }
 }
@@ -175,10 +258,13 @@ fun LandingPreviewMonthly() {
 @Composable
 fun LandingPreviewRegular() {
     BeepPiscaTheme {
-        LandingContent(
-            uiState = LandingViewModel.UiState.AtStop(sampleStop, LandingViewModel.TicketType.REGULAR),
+        LandingScreen(
+            viewModel = LandingViewModel().apply {
+                _uiState.value = LandingViewModel.UiState.AtStop(sampleStop, LandingViewModel.TicketType.REGULAR)
+            },
             onValidate = {},
-            onBuy = {}
+            onBuy = {},
+            onBack = {}
         )
     }
 }
@@ -187,10 +273,13 @@ fun LandingPreviewRegular() {
 @Composable
 fun LandingPreviewNone() {
     BeepPiscaTheme {
-        LandingContent(
-            uiState = LandingViewModel.UiState.AtStop(sampleStop, LandingViewModel.TicketType.NONE),
+        LandingScreen(
+            viewModel = LandingViewModel().apply {
+                _uiState.value = LandingViewModel.UiState.AtStop(sampleStop, LandingViewModel.TicketType.NONE)
+            },
             onValidate = {},
-            onBuy = {}
+            onBuy = {},
+            onBack = {}
         )
     }
 }

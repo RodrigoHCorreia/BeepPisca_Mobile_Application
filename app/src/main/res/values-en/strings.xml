@@ -22,4 +22,9 @@
     <!-- accessibility -->
     <string name="content_desc_busstop">Image of the bus stop</string>
     <string name="content_desc_ticket">Image of the ticket</string>
+
+    <string name="monthly_ticket_info">Valid until 30/06</string>
+    <string name="regular_ticket_info">You have 3 single tickets left</string>
+    <string name="carris_logo_desc">Carris Logo</string>
+    <string name="back">Back</string>
 </resources>

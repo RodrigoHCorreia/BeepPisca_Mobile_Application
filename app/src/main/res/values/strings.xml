@@ -22,5 +22,9 @@
     <string name="content_desc_busstop">Imagem da paragem de autocarro</string>
     <string name="content_desc_ticket">Imagem do bilhete</string>
 
+    <string name="monthly_ticket_info">Válido até 30/06</string>
+    <string name="regular_ticket_info">Você tem 3 bilhetes unitários restantes</string>
+    <string name="carris_logo_desc">Logo da Carris</string>
+    <string name="back">Voltar</string>
 
 </resources>
