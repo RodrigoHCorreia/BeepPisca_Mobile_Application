@@ -24,13 +24,14 @@ fun DefaultButton(
             .fillMaxWidth(0.8f)
             .height(56.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF4CAF50)
+            containerColor = Color(0xFFFFDE21)
         ),
         shape = RoundedCornerShape(28.dp)
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
+            style = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
+            color = Color.Black
         )
     }
 }

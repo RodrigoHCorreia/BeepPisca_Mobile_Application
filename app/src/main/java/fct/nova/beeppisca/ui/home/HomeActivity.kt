@@ -90,7 +90,8 @@ class HomeActivity : ComponentActivity() {
                 LandingScreen(
                     viewModel  = landingViewModel,
                     onValidate = { /* TODO: implement validate */ },
-                    onBuy      = { /* TODO: implement purchase flow */ }
+                    onBuy      = { /* TODO: implement purchase flow */ },
+                    onBack     = { finish() } // Close activity on back
                 )
             }
         }
