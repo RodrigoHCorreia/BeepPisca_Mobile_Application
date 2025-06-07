@@ -39,4 +39,14 @@
     <string name="validation_failed">Ticket validation failed. Please try again.</string>
     <string name="ok">OK</string>
     <string name="try_again">Try Again</string>
+    <string name="admin_welcome">Hello, %1$s.</string>
+    <string name="admin_illegal_list_title">Buses with illegal occupants:</string>
+    <string name="admin_bus_number">Bus %1$s</string>
+    <string name="admin_location_fmt">Location: %1$.5f, %2$.5f</string>
+    <string name="admin_illegal_occupants">Illegal occupants: %1$d</string>
+    <string name="bus_number">Line %1$s</string>
+    <string name="route_format">%1$s → %2$s</string>
+    <string name="illegal_count">%1$d over capacity</string>
+    <string name="illegal_warning">Over capacity</string>
+    <string name="open_in_maps">Open in Maps</string>
 </resources>

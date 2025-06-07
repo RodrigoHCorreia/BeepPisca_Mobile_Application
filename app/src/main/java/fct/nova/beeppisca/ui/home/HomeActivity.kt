@@ -1,4 +1,3 @@
-// app/src/main/java/fct/nova/beeppisca/ui/home/HomeActivity.kt
 package fct.nova.beeppisca.ui.home
 
 import android.Manifest
@@ -12,8 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import fct.nova.beeppisca.domain.MomentLocation
-import fct.nova.beeppisca.storage.BusRepository
 import fct.nova.beeppisca.storage.LocalDataStore
+import fct.nova.beeppisca.storage.BusRepository
+import fct.nova.beeppisca.ui.adminView.AdminViewActivity
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
@@ -22,74 +22,53 @@ private val Context.appDataStore by preferencesDataStore("user_prefs")
 class HomeActivity : ComponentActivity() {
 
     private val localDataStore by lazy { LocalDataStore(appDataStore) }
-    private val busRepo = BusRepository()
+    private val busRepo by lazy { BusRepository() }
 
-    // launcher for location permission
     private val permLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { results ->
-        if (results[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
-            initLanding()
-        } else {
-            finish()
-        }
+    ) { perms ->
+        if (perms[Manifest.permission.ACCESS_FINE_LOCATION] == true) init() else finish()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 1) Ensure location permission
-        when {
-            ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> initLanding()
-            else -> permLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
-        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) init()
+        else permLauncher.launch(arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ))
     }
 
     @Suppress("MissingPermission")
-    private fun initLanding() {
-        // 2) Obtain last known location (or fallback to 0,0)
+    private fun init() {
         val lm  = getSystemService(LocationManager::class.java)
         val loc = lm?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        val momentLoc = loc
-            ?.let { MomentLocation(it.latitude, it.longitude, it.time) }
+        val mLoc = loc?.let { MomentLocation(it.latitude, it.longitude, it.time) }
             ?: MomentLocation(0.0, 0.0, System.currentTimeMillis())
 
         lifecycleScope.launch {
-            // 3) For debugging/demo: choose which built-in user to “log in” as:
-            //    Uncomment one of the lines below:
-            // localDataStore.loginAsAdmin()
-            localDataStore.loginAsBasic()
+            // pick one for demo… switch as needed:
+            localDataStore.loginAsAdmin()
+            //localDataStore.loginAsBasic()
 
-            // 4) Read current user ID from DataStore
-            val userId = localDataStore.userIdFlow.firstOrNull()
+            val user    = localDataStore.currentUser.firstOrNull()
+            val userId  = user?.id
+            val userName= user?.name ?: "User"
 
-            // 5) Determine whether there’s a nearby stop
-            val stop = busRepo.getBusStopForLocation(
-                momentLoc.latitude, momentLoc.longitude
-            )
-
-            // 6) Navigate to the appropriate screen
-            if (stop == null) {
-                NoStopActivity.launch(
-                    ctx   = this@HomeActivity,
-                    loc       = momentLoc,
-                    userId    = userId
-                )
+            // If admin → go to AdminView
+            if (user?.isAdmin == true) {
+                AdminViewActivity.launch(this@HomeActivity, userName)
             } else {
-                AtStopActivity.launch(
-                    ctx   = this@HomeActivity,
-                    loc       = momentLoc,
-                    userId    = userId
-                )
+                // else regular flow
+                val stop = busRepo.getBusStopForLocation(mLoc.latitude, mLoc.longitude)
+                if (stop == null) {
+                    NoStopActivity.launch(this@HomeActivity, mLoc, userId)
+                } else {
+                    AtStopActivity.launch(this@HomeActivity, mLoc, userId)
+                }
             }
-            // 7) Close HomeActivity so back returns out of the app
             finish()
         }
     }

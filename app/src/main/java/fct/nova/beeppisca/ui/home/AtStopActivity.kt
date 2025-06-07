@@ -1,4 +1,3 @@
-// app/src/main/java/fct/nova/beeppisca/ui/home/AtStopActivity.kt
 package fct.nova.beeppisca.ui.home
 
 import android.content.Context

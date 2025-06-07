@@ -39,5 +39,16 @@
     <string name="ok">OK</string>
     <string name="try_again">Tentar novamente</string>
 
+    <string name="admin_welcome">Olá, %1$s.</string>
+    <string name="admin_illegal_list_title">Autocarros com ocupação ilegal:</string>
+    <string name="admin_bus_number">Autocarro %1$s</string>
+    <string name="admin_location_fmt">Localização: %1$.5f, %2$.5f</string>
+    <string name="admin_illegal_occupants">Ocupantes ilegais: %1$d</string>
+    <string name="bus_number">Linha %1$s</string>
+    <string name="route_format">%1$s → %2$s</string>
+    <string name="illegal_count">%1$d acima da lotação</string>
+    <string name="illegal_warning">Lotação excedida</string>
+    <string name="open_in_maps">Abrir no mapa</string>
+
 
 </resources>

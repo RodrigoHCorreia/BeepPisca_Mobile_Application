@@ -15,8 +15,8 @@ data class Bus(
     val isFull: Boolean
         get() = occupancy >= capacity
 
-    val illegalOccupancy: Int = if (occupancy > capacity) {
-        occupancy - capacity
+    val illegalOccupancy: Int = if (occupancy > payedOccupancy) {
+        occupancy - payedOccupancy
     } else {
         0
     }

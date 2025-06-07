@@ -36,30 +36,31 @@
             </intent-filter>
         </activity>
 
-        <!-- No-stop “home” screen -->
         <activity
             android:name=".ui.home.NoStopActivity"
             android:exported="false"
             android:theme="@style/Theme.BeepPisca" />
 
-        <!-- At-stop screen -->
         <activity
             android:name=".ui.home.AtStopActivity"
             android:exported="false"
             android:theme="@style/Theme.BeepPisca" />
 
-        <!-- Validation screen -->
         <activity
             android:name=".ui.validation.TicketValidationActivity"
             android:exported="false"
             android:theme="@style/Theme.BeepPisca" />
 
-        <!-- your Settings screen if you have one -->
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="true"
             android:label="@string/settings_title"
             android:theme="@style/Theme.BeepPisca" />
+
+        <activity android:name=".ui.adminView.AdminViewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.BeepPisca" />
+
 
     </application>
 </manifest>
