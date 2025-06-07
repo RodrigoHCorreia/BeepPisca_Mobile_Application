@@ -38,6 +38,9 @@
             android:label="@string/settings_title"
             android:theme="@style/Theme.BeepPisca" />
 
+        <!-- Authentication screen -->
+
+
         <!-- TODO: add other activities here -->
         <!--
         <activity
