@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">BeepPisca</string>
+    <string name="settings_title">Definições</string>
+
+    <string name="permission_location_title">Permissão de localização</string>
+    <string name="permission_location_message">
+        Esta aplicação precisa da sua localização para funcionar corretamente.
+    </string>
+    <string name="button_request_permission">Conceder localização</string>
+
+    <!-- landing page – no stop found -->
+    <string name="no_stop_found">Nenhuma paragem encontrada</string>
+
+    <!-- landing page – stop header: %1$s = nome -->
+    <string name="paragem_title">Paragem %1$s</string>
+
+    <!-- actions -->
+    <string name="button_validate_ticket">Validar Bilhete</string>
+    <string name="button_buy_ticket">Comprar Bilhete</string>
+
+    <!-- accessibility -->
+    <string name="content_desc_busstop">Imagem da paragem de autocarro</string>
+    <string name="content_desc_ticket">Imagem do bilhete</string>
+
+
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BeepPisca</string>
+    <string name="settings_title">Settings</string>
+
+    <string name="permission_location_title">Location Permission</string>
+    <string name="permission_location_message">
+        This application requires your location to function correctly.
+    </string>
+    <string name="button_request_permission">Grant Location</string>
+
+    <!-- landing page – no stop found -->
+    <string name="no_stop_found">No stop found</string>
+
+    <!-- landing page – stop header: %1$s = name -->
+    <string name="paragem_title">Stop %1$s</string>
+
+    <!-- actions -->
+    <string name="button_validate_ticket">Validate Ticket</string>
+    <string name="button_buy_ticket">Buy Ticket</string>
+
+    <!-- accessibility -->
+    <string name="content_desc_busstop">Image of the bus stop</string>
+    <string name="content_desc_ticket">Image of the ticket</string>
+</resources>
