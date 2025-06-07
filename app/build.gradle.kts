@@ -40,6 +40,11 @@ android {
 }
 
 dependencies {
+    // OkHttp for networking
+    implementation(libs.okhttp)
+
+    // org.json for JSON parsing
+    implementation(libs.json)
 
     implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.activity:activity-ktx:1.7.2")
