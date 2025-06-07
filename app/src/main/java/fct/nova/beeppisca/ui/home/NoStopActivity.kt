@@ -11,6 +11,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import fct.nova.beeppisca.domain.MomentLocation
 import fct.nova.beeppisca.storage.LocalDataStore
+import fct.nova.beeppisca.ui.search.SearchActivity
 import fct.nova.beeppisca.ui.theme.BeepPiscaTheme
 import kotlinx.coroutines.launch
 
@@ -47,7 +48,11 @@ class NoStopActivity : ComponentActivity() {
                         userLoc = loc,
                         userId = userId,
                         onBuy = { /* … */ },
-                        onSearch = { /* … */ },
+                        onSearch = { SearchActivity.launch(
+                            ctx = this@NoStopActivity,
+                            loc = loc,
+                            userId = userId
+                        ) },
                         onSettings = {}
                     )
                 }

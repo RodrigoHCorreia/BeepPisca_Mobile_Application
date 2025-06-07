@@ -49,4 +49,5 @@
     <string name="illegal_count">%1$d over capacity</string>
     <string name="illegal_warning">Over capacity</string>
     <string name="open_in_maps">Open in Maps</string>
+
 </resources>

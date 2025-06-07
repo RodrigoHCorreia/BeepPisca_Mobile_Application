@@ -23,13 +23,14 @@ import fct.nova.beeppisca.ui.theme.CarrisBlue
 fun SearchScreen(
     viewModel: SearchViewModel,
     userLoc: MomentLocation,
+    modifier: Modifier = Modifier,
     onSelect: (SearchResult) -> Unit
 ) {
     val query   = viewModel.query.collectAsState().value
     val results = viewModel.results.collectAsState().value
     val loading = viewModel.loading.collectAsState().value
 
-    Column(Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         OutlinedTextField(
             value = query,
             onValueChange = viewModel::onQueryChange,

@@ -9,7 +9,7 @@ sealed class Ticket {
     abstract val dateOfPurchase: String
     abstract val expirationDate: String?
     abstract val isValid: Boolean
-    abstract val image: Int // Placeholder for image resource ID
+    abstract val image: Int
 
     data class StandaloneTicket(
         override val id: String,

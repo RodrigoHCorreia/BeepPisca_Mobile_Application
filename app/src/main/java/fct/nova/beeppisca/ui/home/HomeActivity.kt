@@ -50,8 +50,8 @@ class HomeActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             // pick one for demo… switch as needed:
-            localDataStore.loginAsAdmin()
-            //localDataStore.loginAsBasic()
+            //localDataStore.loginAsAdmin()
+            localDataStore.loginAsBasic()
 
             val user    = localDataStore.currentUser.firstOrNull()
             val userId  = user?.id

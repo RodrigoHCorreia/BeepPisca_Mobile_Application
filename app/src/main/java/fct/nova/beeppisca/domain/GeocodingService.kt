@@ -12,8 +12,7 @@ interface GeocodingService {
  */
 object MockGeocodingService : GeocodingService {
     override suspend fun geocodeAddress(address: String): Location? {
-        // you’d call Google’s Geocoding API here
-        return Location(    // dummy coords
+        return Location(
             latitude  = 38.736946 + (-0.02..0.02).random(),
             longitude = -9.142685 + (-0.02..0.02).random()
         )
