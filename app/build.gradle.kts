@@ -40,6 +40,11 @@ android {
 }
 
 dependencies {
+    // OkHttp for networking
+    implementation(libs.okhttp)
+
+    // org.json for JSON parsing
+    implementation(libs.json)
 
     implementation("com.google.android.material:material:1.9.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0")
