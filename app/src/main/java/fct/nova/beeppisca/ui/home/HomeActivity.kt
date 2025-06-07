@@ -82,16 +82,19 @@ class HomeActivity : ComponentActivity() {
         } ?: MomentLocation(0.0, 0.0, System.currentTimeMillis())
 
         // Trigger ViewModel load
-        landingViewModel.load("CURRENT_USER_ID", momentLoc)
+        landingViewModel.loadForLocation("CURRENT_USER_ID", momentLoc)
+
 
         // Render Compose UI
         setContent {
             BeepPiscaTheme {
                 LandingScreen(
-                    viewModel  = landingViewModel,
+                    viewModel = landingViewModel,
                     onValidate = { /* TODO: implement validate */ },
-                    onBuy      = { /* TODO: implement purchase flow */ },
-                    onBack     = { finish() } // Close activity on back
+                    onBuy = { /* TODO: implement purchase flow */ },
+                    onBack = { finish() },
+                    userLoc = momentLoc,
+                    onSearchSelect = { TODO()}
                 )
             }
         }

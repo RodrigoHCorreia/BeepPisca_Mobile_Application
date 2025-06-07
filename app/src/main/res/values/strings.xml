@@ -27,4 +27,12 @@
     <string name="carris_logo_desc">Logo da Carris</string>
     <string name="back">Voltar</string>
 
+    <string name="bilhetes_disponiveis">Bilhetes disponíveis</string>
+    <string name="valid_until">Válido até %1$s</string>
+    <string name="prev_ticket">Ticket anterior</string>
+    <string name="next_ticket">Próximo ticket</string>
+    <string name="no_tickets_available">Sem bilhetes disponíveis</string>
+    <string name="hello_user">Olá, %1$s</string>
+    <string name="destino">Destino</string>
+
 </resources>

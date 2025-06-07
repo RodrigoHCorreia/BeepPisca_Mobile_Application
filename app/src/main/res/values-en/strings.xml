@@ -27,4 +27,12 @@
     <string name="regular_ticket_info">You have 3 single tickets left</string>
     <string name="carris_logo_desc">Carris Logo</string>
     <string name="back">Back</string>
+
+    <string name="bilhetes_disponiveis">Available Tickets</string>
+    <string name="valid_until">Valid until %1$s</string>
+    <string name="prev_ticket">Previous ticket</string>
+    <string name="next_ticket">Next ticket</string>
+    <string name="no_tickets_available">No tickets available</string>
+    <string name="hello_user">Hello, %1$s</string>
+    <string name="destino">Destination</string>
 </resources>

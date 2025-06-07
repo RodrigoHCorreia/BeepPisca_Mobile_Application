@@ -1,77 +1,90 @@
 package fct.nova.beeppisca.storage
 
-import fct.nova.beeppisca.domain.Bus
-import fct.nova.beeppisca.domain.BusStop
-import fct.nova.beeppisca.domain.Location
-import fct.nova.beeppisca.domain.MomentLocation
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import java.time.LocalTime
+import fct.nova.beeppisca.domain.*
+import fct.nova.beeppisca.domain.Ticket.MonthlyTicket
+import fct.nova.beeppisca.domain.Ticket.StandaloneTicket
+import kotlinx.coroutines.delay
+import kotlin.random.Random
 
+/**
+ * A single repository with all bus-related methods.
+ * Currently fully mocked for prototyping.
+ */
 class BusRepository {
 
-    private val _buses = MutableStateFlow<List<Bus>>(emptyList())
-    val buses: Flow<List<Bus>> = _buses
+    /**
+     * 50/50 chance to “find” a nearby stop.
+     */
+    suspend fun getBusStopForLocation(lat: Double, lon: Double): BusStop? {
+        delay(300) // simulate network
+        return if (Random.nextBoolean()) {
+            BusStop(
+                id       = "bs123",
+                name     = "Central",
+                location = Location(lat, lon),
+                radius   = 100.0,
+                imageUrl = "" // future: real URL
+            )
+        } else null
+    }
 
-    fun getBusStops(busNumber: String): List<BusStop> {
-        // Mock bus data for now
-        val busStop1 = BusStop(
-            id = "1",
-            name = "Main Street Stop",
-            location = Location(latitude = 40.7128, longitude = -74.0060),
-            radius = 100.0
-        )
-        val busStop2 = BusStop(
-            id = "2",
-            name = "Elm Street Stop",
-            location = Location(latitude = 40.7138, longitude = -74.0070),
-            radius = 50.0
-        )
+    /**
+     * Randomly decide if the user has a monthly ticket.
+     */
+    suspend fun hasMonthlyTicket(userId: String): Boolean {
+        delay(100)
+        return Random.nextBoolean()
+    }
 
-        return if (busNumber == "102") {
-            listOf(busStop1, busStop2)
-        } else {
-            emptyList()
+    /**
+     * Randomly decide if the user has a regular (single-ride) ticket.
+     */
+    suspend fun hasRegularTicket(userId: String): Boolean {
+        delay(100)
+        return Random.nextBoolean()
+    }
+
+    /**
+     * Return the list of tickets the user currently holds.
+     * Excludes monthly if has none.
+     */
+    suspend fun getUserTickets(userId: String): List<Ticket> {
+        delay(200)
+        val list = mutableListOf<Ticket>()
+        if (Random.nextBoolean()) {
+            list += MonthlyTicket(
+                id                = "monthly123",
+                dateOfPurchase   = "01/06",
+                expirationDate   = "30/06",
+            )
         }
+        list += StandaloneTicket(
+            id                = "ticket123",
+            dateOfPurchase   = "01/06",
+            isUsed           = Random.nextBoolean(),
+        )
+        return list
     }
 
-    fun loadBuses() {
-        // Mock data to populate buses
-        val bus = Bus(
-            busNumber = "750",
-            origin = BusStop(
-                id = "1",
-                name = "Central Station",
-                location = Location(latitude = 40.7128, longitude = -74.0060),
-                radius = 100.0
-            ),
-            destination = BusStop(
-                id = "2",
-                name = "Downtown",
-                location = Location(latitude = 40.7138, longitude = -74.0070),
-                radius = 50.0
-            ),
-            stops = mapOf(
-                BusStop(
-                    id = "1",
-                    name = "Central Station",
-                    location = Location(latitude = 40.7128, longitude = -74.0060),
-                    radius = 100.0
-                ) to listOf(LocalTime.of(10, 0), LocalTime.of(10, 15)),
-                BusStop(
-                    id = "2",
-                    name = "Downtown",
-                    location = Location(latitude = 40.7138, longitude = -74.0070),
-                    radius = 50.0
-                ) to listOf(LocalTime.of(10, 30), LocalTime.of(10, 45))
-            ),
-            location = MomentLocation(
-                latitude = 40.7128,
-                longitude = -74.0060,
-                timestamp = LocalTime.now().toNanoOfDay()
-            ),
-            capacity = 50,
-        )
-        _buses.value = listOf(bus)
+    /**
+     * Given a user location and desired destination location,
+     * produce a sorted list of SearchResult options.
+     */
+    suspend fun getBusOptions(
+        userLoc: MomentLocation,
+        destLocation: Location
+    ): List<SearchResult> {
+        delay(400)
+        return (1..5).map { i ->
+            SearchResult(
+                busNr              = listOf("102", "205", "713", "28E", "760")[i % 5],
+                origin             = "Paragem ${'A' + i}",
+                destination        = "Destino X",
+                busStopName        = "Stop ${i * 3}",
+                walkDistanceMeters = Random.nextInt(50, 500),
+                busDistanceMeters  = Random.nextInt(1000, 5000)
+            )
+        }.sortedBy { it.walkDistanceMeters }
     }
+
 }
